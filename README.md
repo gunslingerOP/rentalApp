@@ -1,7 +1,3 @@
-# Awesome Project Build with TypeORM
+# Airbnb app by stack ninjas
 
-Steps to run this project:
-
-1. Run `npm i` command
-2. Setup database settings inside `ormconfig.json` file
-3. Run `npm start` command
+This is the backend repository to the Airbnb web app that will be a part of the fikracamps bootcamp, i (hasan aqeel) will be the one responsible for building and maintaining this repo;
