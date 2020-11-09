@@ -24,6 +24,9 @@ export class User extends BaseEntity {
     @Column()
     verified: boolean;
 
+    @Column()
+    image: string;
+
     @Column({ unique: true })
     email: string;
 

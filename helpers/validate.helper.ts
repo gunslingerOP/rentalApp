@@ -6,6 +6,10 @@ export default class Validator {
       presence: must,
       type: "string",
     },
+    image:{
+      presence:must,
+      type:"string"
+    },
     middleName: {
       presence: must,
       type: "string",
@@ -56,8 +60,50 @@ export default class Validator {
       presence: must,
       type: "string",
     },
+    password:{
+      presence:must,
+      type:"string"
+    }
   });
 
+  static adminLogin = (must = true) => ({
+    email: {
+      type: "string",
+      presence:must
+    },
+    password: {
+      presence: must,
+      type: "string",
+    },
+  });
+
+  static addProvince = (must = true) => ({
+    name: {
+      type: "string",
+      presence:must
+    }
+  });
+  static addCity = (must = true) => ({
+    name: {
+      type: "string",
+      presence:must
+    },
+    provinceID:{
+      type:"number",
+      presence:must
+    }
+  });
+  static addDistrict = (must = true) => ({
+    name: {
+      type: "string",
+      presence:must
+    },
+    cityID:{
+      type:"number",
+      presence:must
+    }
+
+  });
   static sendReset = (must = true) => ({
     phone: {
       type: "string",
@@ -81,13 +127,17 @@ export default class Validator {
       type: "number",
       presence: must,
     },
+    city_id: {
+      type: "number",
+      presence: must,
+    },
     address: {
       presence: must,
       type: "string",
     },
     images: {
       presence: must,
-      type: "array"
+      type: "string"
     },
     User_id: {
       presence: must,
@@ -95,13 +145,13 @@ export default class Validator {
     },
     price: {
       presence: must,
-      type: "number",
+      type: "string",
     },
     bedrooms: {
       presence: must,
       type: "number",
     },
-    bathrroms: {
+    bathrooms: {
       presence: must,
       type: "number",
     },
@@ -161,14 +211,25 @@ export default class Validator {
       type: "string",
     }
   });
-  static makeInvoice = (must = true) => ({
-    landlordId: {
+  static makeInvoiceUser = (must = true) => ({
+    landlord_id: {
       type: "number",
       presence: must,
     },
-    propertyId: {
+    property_id: {
       presence: must,
       type: "number",
+    },
+    price: {
+      presence: must,
+      type: "string",
+    }
+  });
+
+  static getInvoiceLandlord = (must = true) => ({
+    landlord_id: {
+      type: "number",
+      presence: must,
     }
   });
 }

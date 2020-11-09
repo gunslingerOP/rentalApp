@@ -9,10 +9,10 @@ export class PropertyImage extends BaseEntity{
     id: number;
 
     @Column()
-    propertyID: string;
+    propertyID: number;
 
     @Column()
-    Image: string;
+    image: string;
 
     @ManyToOne(type => Property, property => property.images)
     property: Property;

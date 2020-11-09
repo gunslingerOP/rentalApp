@@ -24,6 +24,9 @@ export class Property extends BaseEntity{
     price: number;
 
     @Column()
+    city_id: number;
+
+    @Column()
     bedrooms: number;
 
     @Column()

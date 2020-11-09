@@ -9,7 +9,7 @@ export class Invoice extends BaseEntity{
     id: number;
 
     @Column()
-    landLord_id: number;
+    landlord_id: number;
 
     @Column()
     Host_paid_status: boolean;

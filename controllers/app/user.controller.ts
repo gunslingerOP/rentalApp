@@ -20,6 +20,9 @@ import { Review } from "../../src/entity/review";
 import { PropertyImage } from "../../src/entity/propertyImages";
 import { ReviewImage } from "../../src/entity/reviewImage";
 import { Notification } from "../../src/entity/notifications";
+import { District } from "../../src/entity/district";
+import { City } from "../../src/entity/city";
+import { Province } from "../../src/entity/province";
 export default class UserController {
   /**
    * @params
@@ -124,13 +127,14 @@ export default class UserController {
         req.body.password,
         user.password
       );
-      if (validPassword) {
-        token = jwt.sign({ id: user.id }, config.jwtSecret);
+      if (!validPassword) {
+        return errRes(res, `password is incorrect`);
       }
+      token = jwt.sign({ id: user.id }, config.jwtSecret);
     } catch (error) {
       return errRes(res, error);
     }
-    return okRes(res, { data: `Login successful, your token is ${token}` });
+    return okRes(res, { data: [token] });
   }
 
   static async sendReset(req, res): Promise<object> {
@@ -163,11 +167,12 @@ export default class UserController {
 
     if (user.resetotp != req.body.otp) {
       user.resetotp = getOTP();
+      await user.save();
       return errRes(res, `You entered a wrong OTP, please get a new one sent`);
     }
 
     if (user.resetotp == req.body.otp) {
-      user.password = req.body.newPassword;
+      user.password = await hashMyPassword(req.body.newPassword);
       user.resetotp = getOTP();
       await user.save();
     }
@@ -185,11 +190,17 @@ export default class UserController {
   static async addPropertyImage(req, res): Promise<object> {
     let isNotValid = validate(req.body, validator.addPropertyImage());
     if (isNotValid) return errRes(res, isNotValid);
+    let property: any;
 
+    property = await Property.findOne({
+      where: { id: req.body.propertyID },
+    });
+    if (!property) return errRes(res, `no such property found`);
     let newImage: any;
     try {
       newImage = await PropertyImage.create({
         ...req.body,
+        property,
       });
       await newImage.save();
     } catch (error) {
@@ -203,10 +214,17 @@ export default class UserController {
     let isNotValid = validate(req.body, validator.addReviewImage());
     if (isNotValid) return errRes(res, isNotValid);
 
+    let review: any;
+
+    review = await Review.findOne({
+      where: { id: req.body.review_id },
+    });
+    if (!review) return errRes(res, `no such property found`);
     let newImage: any;
     try {
       newImage = await ReviewImage.create({
         ...req.body,
+        review,
       });
       await newImage.save();
     } catch (error) {
@@ -219,6 +237,34 @@ export default class UserController {
   static async postProperty(req, res): Promise<Object> {
     let isNotValid = validate(req.body, validator.postProperty());
     if (isNotValid) return errRes(res, isNotValid);
+    let province: any;
+    let city: any;
+    let district: any;
+
+    try {
+      district = await District.findOne({
+        where: { id: req.body.district_id },
+      });
+      if (!district) return errRes(res, `no such district found`);
+      district.active = true;
+      await district.save();
+
+      city = await City.findOne({
+        where: { id: district.cityID },
+      });
+      if (!city) return errRes(res, `no such city found`);
+      city.active = true;
+      await city.save();
+
+      province = await Province.findOne({
+        where: { id: city.provinceID },
+      });
+      if (!province) return errRes(res, `no such province found`);
+      province.active = true;
+      await province.save();
+    } catch (error) {
+      return errRes(res, "its me");
+    }
 
     let user = req.user;
     let property: any;
@@ -229,6 +275,8 @@ export default class UserController {
         ...req.body,
         ownerid: user.id,
         booked: false,
+        district,
+        city,
       });
       await property.save();
     } catch (error) {
@@ -243,6 +291,14 @@ export default class UserController {
     if (isNotValid) return errRes(res, isNotValid);
     let invoiceStatus: any;
     let user = req.user;
+
+    let property: any;
+
+    property = await Property.findOne({
+      where: { id: req.body.property_id },
+    });
+    if (!property) return errRes(res, `no such property found`);
+
     let review: any;
     invoiceStatus = await Invoice.findOne({
       where: { user_id: user.id, has_reviewed: false, paid_status: true },
@@ -260,22 +316,25 @@ export default class UserController {
       review = await Review.create({
         ...req.body,
         tenant_id: user.id,
+        property,
       });
     } catch (error) {
-     return errRes(res, error);
+      return errRes(res, error);
     }
     return okRes(res, `Review successfully submitted`);
   }
 
-  static async makeInvoice(req, res): Promise<object> {
-    let isNotValid = validate(req.body, validator.makeInvoice());
+  static async makeInvoiceUser(req, res): Promise<object> {
+    let isNotValid = validate(req.body, validator.makeInvoiceUser());
     if (isNotValid) return errRes(res, isNotValid);
-
+    let user = req.user;
     let invoice: any;
 
     try {
       invoice = await Invoice.create({
         ...req.body,
+        user,
+        user_id: user.id,
         Host_paid_status: false,
         has_reviewed: false,
         paid_status: false,
@@ -283,44 +342,66 @@ export default class UserController {
       });
       await invoice.save();
     } catch (error) {
-     return errRes(res, error);
+      return errRes(res, error);
     }
-   return okRes(res, `Invoice successfully created`);
+    return okRes(res, `Invoice successfully created`);
+  }
+
+  static async getInvoiceLandlord(req, res): Promise<object> {
+    let isNotValid = validate(req.body, validator.getInvoiceLandlord());
+    if (isNotValid) return errRes(res, isNotValid);
+    let user = req.user;
+    if (!user.isOwner)
+      return errRes(res, `Please activate your host status first!`);
+    let invoice: any;
+
+    try {
+      invoice = await Invoice.find({
+        where: { landlord_id: user.id },
+      });
+    } catch (error) {
+      return errRes(res, error);
+    }
+    return okRes(res, invoice);
   }
 
   static async acceptTenant(req, res): Promise<object> {
     let user = req.user;
     let invoice: any;
+    let property: any;
 
     try {
       invoice = await Invoice.findOne({
         where: { landLord_id: user.id },
       });
+      property = await Property.find({
+        where: { id: invoice.property_id },
+      });
+      property.booked = true
+      await property.save()
       if (!invoice) return errRes(res, `Only the landlord can accept requests`);
 
-      invoice.paid_status = true
+      invoice.paid_status = true;
 
-     await invoice.save()
-
+      await invoice.save();
     } catch (error) {
-     return errRes(res, error);
+      return errRes(res, error);
     }
-   return okRes(res, `Tenant accepted`);
+    return okRes(res, `Tenant accepted`);
   }
 
   static async sendNotification(req, res): Promise<object> {
     let user = req.user;
-    let isNotValid = validate(req.body, validator.notify())
-    let notification:any;
+    let isNotValid = validate(req.body, validator.notify());
+    let notification: any;
     try {
-     notification = await Notification.create({
-       ...req.body
-     })
-     await notification.save()
-
+      notification = await Notification.create({
+        ...req.body,
+      });
+      await notification.save();
     } catch (error) {
-     return errRes(res, error);
+      return errRes(res, error);
     }
-   return okRes(res, `Notification sent`);
+    return okRes(res, `Notification sent`);
   }
 }

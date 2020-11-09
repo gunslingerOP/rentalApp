@@ -1,6 +1,4 @@
 import config from "../config/index";
-
-import { Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
 import { errRes } from "../helpers/tools";
 import { User } from "../src/entity/User";
