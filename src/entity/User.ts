@@ -1,5 +1,8 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToMany, BaseEntity} from "typeorm";
+import { Invoice } from "./invoice";
+import { Notification } from "./notifications";
 import {Property} from './property'
+import { PropertyImage } from "./propertyImages";
 @Entity("users")
 export class User extends BaseEntity {
     
@@ -15,6 +18,9 @@ export class User extends BaseEntity {
     @Column()
     lastName: string;
 
+    @Column({nullable:true})
+    resetotp: number;
+
     @Column()
     verified: boolean;
 
@@ -23,6 +29,10 @@ export class User extends BaseEntity {
 
     @Column()
     password: string;
+
+    @Column({nullable:true})
+    OTP: number;
+
 
     @Column({ unique: true })
     phone: string;
@@ -38,4 +48,12 @@ export class User extends BaseEntity {
 
     @OneToMany((type)=>Property, (property)=> property.user)
     properties:Property[];
+
+    @OneToMany((type)=>Property, (notification)=> notification.user)
+    notification:Notification;
+
+    @OneToMany((type)=>Property, (invoice)=> invoice.user)
+    invoice:Invoice;
+
+   
 }

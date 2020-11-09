@@ -1,8 +1,9 @@
-import {Entity, PrimaryGeneratedColumn, Column, BaseEntity} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany} from "typeorm";
+import { Property } from "./property";
 
 
 @Entity("city")
-export class Images extends BaseEntity{
+export class City extends BaseEntity{
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -12,5 +13,8 @@ export class Images extends BaseEntity{
 
     @Column()
     provinceID: number;
+
+    @OneToMany((type)=>Property, (property)=>property.city)
+    property:Property;
 
 }

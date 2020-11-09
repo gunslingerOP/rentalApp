@@ -1,4 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, Column, BaseEntity} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToOne} from "typeorm";
+import { Review } from "./review";
 
 
 @Entity("reviewImages")
@@ -8,9 +9,12 @@ export class ReviewImage extends BaseEntity{
     id: number;
 
     @Column()
-    propertyID: string;
+    review_id: string;
 
     @Column()
     Image: string;
 
+    @ManyToOne(type => Review, (review) => review.images)
+    review: Review;
 }
+

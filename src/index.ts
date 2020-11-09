@@ -1,7 +1,8 @@
+import config  from '../config/index'
 import * as express from 'express'
 import {Connection, createConnection} from 'typeorm'
 const app=express()
-const port =  process.env.PORT || 5000
+const port =  config.port || 4000
 import v1 from "../route/app/v1"
 
 

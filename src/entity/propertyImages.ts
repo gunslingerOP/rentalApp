@@ -1,4 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, Column, BaseEntity} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToOne} from "typeorm";
+import { Property } from "./property";
 
 
 @Entity("propertyImages")
@@ -13,4 +14,7 @@ export class PropertyImage extends BaseEntity{
     @Column()
     Image: string;
 
+    @ManyToOne(type => Property, property => property.images)
+    property: Property;
 }
+

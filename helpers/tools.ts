@@ -1,7 +1,10 @@
 import * as bcrypt from "bcrypt";
+import config from "../config/index";
+
 const accountSid = "AC8621faf794d2739317c940715c8736f2";
-const authToken = "327dc418c0dbb698fcaa62884e1a9e04";
+const authToken = config.twilioAuth;
 import * as twilio from "twilio";
+import { error } from "console";
 const client = twilio(accountSid, authToken);
 /**
  * @param res
@@ -12,7 +15,8 @@ const client = twilio(accountSid, authToken);
 const errRes = (res, err, statusCode = 400) => {
   let response = { status: false, err };
   res.statusCode = statusCode;
-  return res.json(response);
+  return res.json(response) 
+  
 };
 
 const okRes = (res, data, statusCode = 200) => {
@@ -32,8 +36,8 @@ const comparePassword = async (plainPassword, hash) =>
 
 const sendSMS = (body: string, to: string) => {
   client.messages
-    .create({ body, from: "+964 770 534 4322", to })
-    .then((message) => console.log(message.sid));
+    .create({ body, from: "+19419993310", to })
+    .then((message) => console.log(message)).catch(error);
 };
 
 export { okRes, errRes, getOTP, hashMyPassword, comparePassword, sendSMS };
