@@ -6,7 +6,8 @@ const port = config.port || 4000;
 import v1 from "../route/app/v1";
 import { Invoice } from "./entity/invoice";
 var cron = require("node-cron");
-
+require('ts-node/register');
+require('./server.ts');
 
 createConnection().then(async (connection) => {
   app.use(express.json());
