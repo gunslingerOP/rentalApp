@@ -43,11 +43,11 @@ export class User extends BaseEntity {
     @Column()
     isOwner: boolean;
 
-    @Column({nullable:true})
-    cityID: number;
+    @Column()
+    cityId: number;
 
-    @Column({nullable:true})
-    districtID: number;
+    @Column()
+    districtId: number;
 
     @OneToMany((type)=>Property, (property)=> property.user)
     properties:Property[];

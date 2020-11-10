@@ -19,7 +19,6 @@ router.post("/addpropertyimage",userAuth, UserController.addPropertyImage)
 router.post("/postreview",userAuth, UserController.postReview)
 router.post("/addreviewimage",userAuth, UserController.addReviewImage)
 router.post("/makeinvoiceuser",userAuth, UserController.makeInvoiceUser)
-
 router.post("/accepttenant",userAuth, UserController.acceptTenant)
 router.post("/notify",userAuth, UserController.sendNotification)
 

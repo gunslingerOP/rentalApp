@@ -1,4 +1,3 @@
-import { ALL } from "dns";
 import { errRes, okRes } from "../../helpers/tools";
 import { Invoice } from "../../src/entity/invoice";
 import { Notification } from "../../src/entity/notifications";
@@ -6,13 +5,20 @@ import { Property } from "../../src/entity/property";
 import { PropertyImage } from "../../src/entity/propertyImages";
 import { Province } from "../../src/entity/province";
 import { Review } from "../../src/entity/review";
-
+import { paginate } from "../../helpers/tools";
 export default class dataStore {
   static async getNotifications(req, res): Promise<object> {
     let user = req.user;
     let notification: any;
-    notification = await Notification.find({
-      where: { recipient_id: user.id },
+    let { p, s } = req.query;
+
+    let { skip, take } = paginate(p, s);
+
+    notification = await Notification.findAndCount({
+      where: { recipientId: user.id },
+      skip,
+      take,
+      order: { created: "DESC" },
     });
     if (!notification) return errRes(res, `can't find your notifications`);
     return okRes(res, { data: notification });
@@ -22,9 +28,14 @@ export default class dataStore {
     let user = req.user;
     let invoice: any;
 
+    let { p, s } = req.query;
+    let { take, skip } = paginate(p, s);
+
     try {
-      invoice = await Invoice.find({
-        where: [{ landLord_id: user.id }, { user_id: user.id }],
+      invoice = await Invoice.findAndCount({
+        where: [{ landlordId: user.id }, { userId: user.id }],
+        take,
+        skip,
       });
       if (!invoice) return errRes(res, `No invoices found`);
     } catch (error) {
@@ -33,66 +44,74 @@ export default class dataStore {
     return okRes(res, invoice);
   }
 
-  static async getLocation(req, res):Promise<object>{
-    let provinces:any;
+  static async getLocation(req, res): Promise<object> {
+    let provinces: any;
 
     provinces = await Province.find({
-    
-        join:{
-            alias:'province',
-            leftJoinAndSelect:{
-                cities: 'province.cities',
-                districts: 'cities.districts'
-            }
-        }
-    
-    })
-    if(!provinces) return errRes(res, `no provinces found`)
+      join: {
+        alias: "province",
+        leftJoinAndSelect: {
+          cities: "province.cities",
+          districts: "cities.districts",
+        },
+      },
+    });
+    if (!provinces) return errRes(res, `no provinces found`);
 
-    okRes(res, provinces)
+    okRes(res, provinces);
   }
-  static async getCityProperties(req, res):Promise<object>{
-    let cityID = req.query.cityId
-let properties:any
-    properties = await Property.find({
-        where:{city_id:cityID}
-    })
-    if(!properties) return errRes(res, `no properties found`)
+  static async getCityProperties(req, res): Promise<object> {
+    let cityID = req.query.cityId;
+    let properties: any;
 
-    okRes(res, properties)
-  }
+    let { p, s } = req.query;
+    let { take, skip } = paginate(p, s);
+    properties = await Property.findAndCount({
+      where: { cityId: cityID },
+      take,
+      skip
+    });
+    if (!properties) return errRes(res, `no properties found`);
 
-  static async getDistrictProperties(req, res):Promise<object>{
-    let districtId = req.query.districtId
-let properties:any
-    properties = await Property.find({
-        where:{district_id:districtId}
-    })
-    if(!properties) return errRes(res, `no properties found`)
-
-    okRes(res, properties)
+    okRes(res, properties);
   }
 
-  static async getPropertyImages(req, res):Promise<object>{
-    let property = req.query.propertyId
-let images:any
+  static async getDistrictProperties(req, res): Promise<object> {
+    let districtId = req.query.districtId;
+    let properties: any;
+
+    let {p ,s } = req.query
+    let {take, skip} = paginate(p ,s)
+
+    properties = await Property.findAndCount({
+      where: { districtId: districtId },
+      take,
+      skip
+    });
+    if (!properties) return errRes(res, `no properties found`);
+
+    okRes(res, properties);
+  }
+
+  static async getPropertyImages(req, res): Promise<object> {
+    let property = req.query.propertyId;
+    let images: any;
     images = await PropertyImage.find({
-        where:{propertyID:property}
-    })
-    if(!images) return errRes(res, `no properties found`)
+      where: { propertyID: property },
+    });
+    if (!images) return errRes(res, `no properties found`);
 
-    okRes(res, images)
+    okRes(res, images);
   }
- 
 
-  static async getPropertyReviews(req, res):Promise<object>{
-    let property = req.query.propertyId
-let reviews:any
+  static async getPropertyReviews(req, res): Promise<object> {
+    let property = req.query.propertyId;
+    let reviews: any;
     reviews = await Review.find({
-        where:{propertyID:property}
-    })
-    if(!reviews) return errRes(res, `no properties found`)
+      where: { propertyID: property },
+    });
+    if (!reviews) return errRes(res, `no properties found`);
 
-    okRes(res, reviews)
+    okRes(res, reviews);
   }
 }

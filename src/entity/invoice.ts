@@ -9,10 +9,10 @@ export class Invoice extends BaseEntity{
     id: number;
 
     @Column()
-    landlord_id: number;
+    landlordId: number;
 
     @Column()
-    Host_paid_status: boolean;
+    hostPaidStatus: boolean;
 
     @Column({ nullable: true })
     zcTransactionId: string;
@@ -27,22 +27,37 @@ export class Invoice extends BaseEntity{
     zcMsg: string;
 
     @Column()
-    user_id:number;
+    userId:number;
+
+    @Column()
+    endDay:number;
+
+    @Column()
+    endMonth:number;
+
+    @Column()
+    startHour:number;
+
+    @Column()
+    startDay:number;
+
+    @Column()
+    startMonth:number;
 
     @Column()
     price:string;
 
     @Column()
-    property_id:number;
+    propertyId:number;
 
     @Column()
-    has_reviewed:boolean;
+    hasReviewed:boolean;
 
     @Column()
-    paid_status:boolean;
+    paidStatus:boolean;
 
     @Column()
-    user_refund_status:boolean;
+    userRefundStatus:boolean;
 
     @ManyToOne(type => User, user => user.invoice)
     user: User;

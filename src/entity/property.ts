@@ -12,10 +12,10 @@ export class Property extends BaseEntity{
     id: number;
 
     @Column()
-    User_id: number;
+    userId: number;
 
     @Column()
-    district_id: number;
+    districtId: number;
 
     @Column()
     address:string;
@@ -24,7 +24,7 @@ export class Property extends BaseEntity{
     price: number;
 
     @Column()
-    city_id: number;
+    cityId: number;
 
     @Column()
     bedrooms: number;

@@ -40,4 +40,10 @@ const sendSMS = (body: string, to: string) => {
     .then((message) => console.log(message)).catch(error);
 };
 
-export { okRes, errRes, getOTP, hashMyPassword, comparePassword, sendSMS };
+const paginate = ( p = 1, s = 10)=>{
+  let take = s
+  let skip = s*(p-1)
+  return {take, skip}
+}
+
+export { okRes, errRes, getOTP, hashMyPassword, comparePassword, sendSMS, paginate };

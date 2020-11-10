@@ -9,7 +9,7 @@ export class ReviewImage extends BaseEntity{
     id: number;
 
     @Column()
-    review_id: string;
+    reviewId: string;
 
     @Column()
     Image: string;

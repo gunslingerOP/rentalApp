@@ -4,6 +4,8 @@ import { User } from "../../src/entity/User";
 import PhoneFormat from "../../helpers/phone.helper";
 import * as jwt from "jsonwebtoken";
 import { Request, Response } from "express";
+var cron = require('node-cron');
+
 import {
   okRes,
   errRes,
@@ -11,9 +13,9 @@ import {
   hashMyPassword,
   comparePassword,
   sendSMS,
+  paginate,
 } from "../../helpers/tools";
 import config from "../../config/index";
-import { error } from "console";
 import { Property } from "../../src/entity/property";
 import { Invoice } from "../../src/entity/invoice";
 import { Review } from "../../src/entity/review";
@@ -217,7 +219,7 @@ export default class UserController {
     let review: any;
 
     review = await Review.findOne({
-      where: { id: req.body.review_id },
+      where: { id: req.body.reviewId },
     });
     if (!review) return errRes(res, `no such property found`);
     let newImage: any;
@@ -243,14 +245,14 @@ export default class UserController {
 
     try {
       district = await District.findOne({
-        where: { id: req.body.district_id },
+        where: { id: req.body.districtId },
       });
       if (!district) return errRes(res, `no such district found`);
       district.active = true;
       await district.save();
 
       city = await City.findOne({
-        where: { id: district.cityID },
+        where: { id: district.cityId },
       });
       if (!city) return errRes(res, `no such city found`);
       city.active = true;
@@ -295,27 +297,27 @@ export default class UserController {
     let property: any;
 
     property = await Property.findOne({
-      where: { id: req.body.property_id },
+      where: { id: req.body.propertyId },
     });
     if (!property) return errRes(res, `no such property found`);
 
     let review: any;
     invoiceStatus = await Invoice.findOne({
-      where: { user_id: user.id, has_reviewed: false, paid_status: true },
+      where: { userId: user.id, hasReviewed: false, paidStatus: true },
     });
-    if (user.id == invoiceStatus.landlord_id)
+    if (user.id == invoiceStatus.landlordId)
       return errRes(res, `You can't put reviews of your own properties!`);
     if (!invoiceStatus)
       return errRes(
         res,
         `You must use the place and pay the bill to review it`
       );
-    invoiceStatus.has_reviewed = true;
+    invoiceStatus.hasReviewed = true;
     invoiceStatus.save();
     try {
       review = await Review.create({
         ...req.body,
-        tenant_id: user.id,
+        tenantId: user.id,
         property,
       });
     } catch (error) {
@@ -334,11 +336,11 @@ export default class UserController {
       invoice = await Invoice.create({
         ...req.body,
         user,
-        user_id: user.id,
-        Host_paid_status: false,
-        has_reviewed: false,
-        paid_status: false,
-        user_refund_status: false,
+        userId: user.id,
+        hostPaidStatus: false,
+        hasReviewed: false,
+        paidStatus: false,
+        userRefundStatus: false,
       });
       await invoice.save();
     } catch (error) {
@@ -355,9 +357,13 @@ export default class UserController {
       return errRes(res, `Please activate your host status first!`);
     let invoice: any;
 
+    let {p ,s } = req.query
+    let {take, skip} = paginate(p ,s)
     try {
-      invoice = await Invoice.find({
-        where: { landlord_id: user.id },
+      invoice = await Invoice.findAndCount({
+        where: { landlordId: user.id },
+        take,
+        skip
       });
     } catch (error) {
       return errRes(res, error);
@@ -372,16 +378,16 @@ export default class UserController {
 
     try {
       invoice = await Invoice.findOne({
-        where: { landLord_id: user.id },
+        where: { landlordId: user.id },
       });
       property = await Property.find({
-        where: { id: invoice.property_id },
+        where: { id: invoice.propertyId },
       });
       property.booked = true
       await property.save()
       if (!invoice) return errRes(res, `Only the landlord can accept requests`);
 
-      invoice.paid_status = true;
+      invoice.paidStatus = true;
 
       await invoice.save();
     } catch (error) {
@@ -393,10 +399,12 @@ export default class UserController {
   static async sendNotification(req, res): Promise<object> {
     let user = req.user;
     let isNotValid = validate(req.body, validator.notify());
+    if(isNotValid) return errRes(res, isNotValid)
     let notification: any;
     try {
       notification = await Notification.create({
         ...req.body,
+        user
       });
       await notification.save();
     } catch (error) {
@@ -404,4 +412,6 @@ export default class UserController {
     }
     return okRes(res, `Notification sent`);
   }
+
+  
 }

@@ -43,7 +43,7 @@ export default class Validator {
  
 
   static notify = (must = true) => ({
-    recipient_id: {
+    recipientId: {
       presence: must,
       type: "number",
     },
@@ -98,7 +98,7 @@ export default class Validator {
       type: "string",
       presence:must
     },
-    cityID:{
+    cityId:{
       type:"number",
       presence:must
     }
@@ -123,11 +123,11 @@ export default class Validator {
   });
 
   static postProperty = (must = true) => ({
-    district_id: {
+    districtId: {
       type: "number",
       presence: must,
     },
-    city_id: {
+    cityId: {
       type: "number",
       presence: must,
     },
@@ -139,7 +139,7 @@ export default class Validator {
       presence: must,
       type: "string"
     },
-    User_id: {
+    userId: {
       presence: must,
       type: "number",
     },
@@ -170,7 +170,7 @@ export default class Validator {
   });
 
   static postReview = (must = true) => ({
-    property_id: {
+    propertyId: {
       type: "number",
       presence: must,
     },
@@ -202,7 +202,7 @@ export default class Validator {
   });
 
   static addReviewImage = (must = true) => ({
-    review_id: {
+    reviewId: {
       type: "number",
       presence: must,
     },
@@ -212,22 +212,42 @@ export default class Validator {
     }
   });
   static makeInvoiceUser = (must = true) => ({
-    landlord_id: {
+    landlordId: {
       type: "number",
       presence: must,
     },
-    property_id: {
+    propertyId: {
       presence: must,
       type: "number",
     },
     price: {
       presence: must,
       type: "string",
+    },
+    startHour:{
+      presence:must,
+      type:"number"
+    },
+    startDay:{
+      presence:must,
+      type:"number"
+    },
+    startMonth:{
+      presence:must,
+      type:"number"
+    },
+    endDay:{
+      presence:must,
+      type:"number"
+    },
+    endMonth:{
+      presence:must,
+      type:"number"
     }
   });
 
   static getInvoiceLandlord = (must = true) => ({
-    landlord_id: {
+    landlordId: {
       type: "number",
       presence: must,
     }

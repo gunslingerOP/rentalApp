@@ -10,7 +10,7 @@ export class Review extends BaseEntity{
     id: number;
 
     @Column()
-    property_id: number;
+    propertyId: number;
 
     @Column()
     stars:number;
@@ -22,7 +22,7 @@ export class Review extends BaseEntity{
     body:string;
 
     @Column()
-    tenant_id:number;
+    tenantId:number;
 
     @OneToMany(type => ReviewImage, (reviewImages) => reviewImages.review)
     images: ReviewImage;
