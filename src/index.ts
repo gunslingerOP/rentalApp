@@ -2,7 +2,7 @@ import config from "../config/index";
 import * as express from "express";
 import { Connection, createConnection } from "typeorm";
 const app = express();
-const port = process.env.PORT || 3000;
+const port =  3000;
 import v1 from "../route/app/v1";
 import { Invoice } from "./entity/invoice";
 var cron = require("node-cron");
