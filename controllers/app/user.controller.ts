@@ -150,6 +150,7 @@ export default class UserController {
 
     let user = req.user;
 
+    if (!user.verified) return errRes(res, `Please verify your account first`)
     try {
       user.resetotp = getOTP();
       await user.save();
@@ -303,7 +304,7 @@ export default class UserController {
 
     let review: any;
     invoiceStatus = await Invoice.findOne({
-      where: { userId: user.id, hasReviewed: false, paidStatus: true },
+      where: { userId: user.id, hasReviewed: false, paidStatus: true, hostPaidStatus:true },
     });
     if (user.id == invoiceStatus.landlordId)
       return errRes(res, `You can't put reviews of your own properties!`);

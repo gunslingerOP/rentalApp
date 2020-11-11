@@ -25,7 +25,7 @@ export class Review extends BaseEntity{
     tenantId:number;
 
     @OneToMany(type => ReviewImage, (reviewImages) => reviewImages.review)
-    images: ReviewImage;
+    images: ReviewImage[];
 
     @ManyToOne(type=> Property, (property)=> property.review)
     property: Property

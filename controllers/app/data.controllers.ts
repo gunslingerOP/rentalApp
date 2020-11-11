@@ -33,7 +33,7 @@ export default class dataStore {
 
     try {
       invoice = await Invoice.findAndCount({
-        where: [{ landlordId: user.id }, { userId: user.id }],
+        where:  { userId: user.id },
         take,
         skip,
       });
@@ -109,6 +109,12 @@ export default class dataStore {
     let reviews: any;
     reviews = await Review.find({
       where: { propertyID: property },
+      join:{
+        alias:"review",
+        leftJoinAndSelect:{
+          images:"review.images"
+        }
+      }
     });
     if (!reviews) return errRes(res, `no properties found`);
 
