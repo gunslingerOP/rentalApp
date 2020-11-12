@@ -2,7 +2,7 @@ import config from "../config/index";
 import * as express from "express";
 import { Connection, createConnection } from "typeorm";
 const app = express();
-var cors = require("cors");
+import * as cors from "cors"
 const port = process.env.PORT || 3000;
 import v1 from "../route/app/v1";
 import { Invoice } from "./entity/invoice";
