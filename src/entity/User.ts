@@ -53,10 +53,10 @@ export class User extends BaseEntity {
     properties:Property[];
 
     @OneToMany((type)=>Property, (notification)=> notification.user)
-    notification:Notification;
+    notifications:Notification[]; // FIXME: add s 
 
     @OneToMany((type)=>Property, (invoice)=> invoice.user)
-    invoice:Invoice;
+    invoices:Invoice[]; // FIXME: add s
 
    
 }

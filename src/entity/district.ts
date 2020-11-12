@@ -24,7 +24,7 @@ export class District extends BaseEntity {
   cityID: number;
 
   @OneToMany((type) => Property, (property) => property.district)
-  property: Property;
+  properties: Property[];
 
   @ManyToOne((type) => City, (city) => city.districts)
   city: City;

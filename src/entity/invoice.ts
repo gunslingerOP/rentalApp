@@ -59,6 +59,6 @@ export class Invoice extends BaseEntity{
     @Column()
     userRefundStatus:boolean;
 
-    @ManyToOne(type => User, user => user.invoice)
+    @ManyToOne(type => User, user => user.invoices)
     user: User;
 }

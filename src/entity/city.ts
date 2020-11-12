@@ -25,7 +25,7 @@ export class City extends BaseEntity {
   provinceID: number;
 
   @OneToMany((type) => Property, (property) => property.city)
-  property: Property;
+  properties: Property[];
 
   @OneToMany((type) => District, (district) => district.city)
   districts: District[];

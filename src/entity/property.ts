@@ -18,7 +18,10 @@ export class Property extends BaseEntity{
     districtId: number;
 
     @Column()
-    address:string;
+    description:string;
+
+    @Column()
+    title:string;
 
     @Column()
     price: number;
@@ -48,14 +51,14 @@ export class Property extends BaseEntity{
     user: User;
 
     @OneToMany((type)=>Review, (review)=>review.property)
-    review:Review;
+    reviews:Review[];
 
     @OneToMany((type)=>PropertyImage, (propertyImage)=> propertyImage.property)
     images:PropertyImage[]
 
-    @ManyToOne((type)=>City, (city)=>city.property)
+    @ManyToOne((type)=>City, (city)=>city.properties)
     city:City;
 
-    @ManyToOne((type)=>District, (district)=>district.property)
+    @ManyToOne((type)=>District, (district)=>district.properties)
     district:District;
 }

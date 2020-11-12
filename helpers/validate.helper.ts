@@ -135,7 +135,11 @@ export default class Validator {
       presence: must,
       type: "string",
     },
-    images: {
+    description: {
+      presence: must,
+      type: "string"
+    },
+    title: {
       presence: must,
       type: "string"
     },
@@ -197,7 +201,7 @@ export default class Validator {
     },
     image: {
       presence: must,
-      type: "string",
+      type: "array",
     }
   });
 
@@ -208,7 +212,7 @@ export default class Validator {
     },
     image: {
       presence: must,
-      type: "string",
+      type: "array",
     }
   });
   static makeInvoiceUser = (must = true) => ({

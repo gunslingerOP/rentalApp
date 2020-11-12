@@ -61,7 +61,7 @@ export default class dataStore {
     okRes(res, provinces);
   }
   static async getCityProperties(req, res): Promise<object> {
-    let cityID = req.query.cityId;
+    let cityID = req.params.cityId;
     let properties: any;
 
     let { p, s } = req.query;
@@ -77,7 +77,7 @@ export default class dataStore {
   }
 
   static async getDistrictProperties(req, res): Promise<object> {
-    let districtId = req.query.districtId;
+    let districtId = req.params.districtId;
     let properties: any;
 
     let {p ,s } = req.query
@@ -94,7 +94,7 @@ export default class dataStore {
   }
 
   static async getPropertyImages(req, res): Promise<object> {
-    let property = req.query.propertyId;
+    let property = req.params.propertyId;
     let images: any;
     images = await PropertyImage.find({
       where: { propertyID: property },
@@ -105,7 +105,7 @@ export default class dataStore {
   }
 
   static async getPropertyReviews(req, res): Promise<object> {
-    let property = req.query.propertyId;
+    let property = req.params.propertyId;
     let reviews: any;
     reviews = await Review.find({
       where: { propertyID: property },
