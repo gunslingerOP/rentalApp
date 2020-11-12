@@ -22,6 +22,6 @@ export class Notification extends BaseEntity {
   @CreateDateColumn({ type: "timestamp with time zone" })
   created: Date;
 
-  @ManyToOne((type) => User, (user) => user.notification)
+  @ManyToOne((type) => User, (user) => user.notifications)
   user: User;
 }
