@@ -50,7 +50,7 @@ export class User extends BaseEntity {
 //   @Column()
 //   cityId: number;
 
-  @Column()
+  @Column({nullable:true})
   districtId: number;
 
   @OneToMany((type) => Property, (property) => property.user)
