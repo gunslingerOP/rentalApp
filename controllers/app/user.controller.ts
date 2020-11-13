@@ -155,7 +155,7 @@ export default class UserController {
       user.resetotp = 2222;
       await user.save();
       let resetOTP = user.resetotp;
-      sendSMS(`Your reset OTP: ${resetOTP}`, user.phone);
+      sendSMS(`Your reset OTP: ${resetOTP}`, user.phone); //FIXME: fix otp process after presentation
     } catch (error) {
       errRes(res, error);
     }
