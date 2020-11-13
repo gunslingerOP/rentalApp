@@ -115,15 +115,15 @@ export default class UserController {
     let notValid = validate(req.body, validator.login());
     if (notValid) return errRes(res, notValid);
 
-    let phoneObj = PhoneFormat.getAllFormats(req.body.phone);
-    if (!phoneObj.isNumber)
-      return errRes(res, `Phone ${req.body.phone} is not valid`);
-    let phone = phoneObj.globalP;
+    // let phoneObj = PhoneFormat.getAllFormats(req.body.phone);
+    // if (!phoneObj.isNumber)
+    //   return errRes(res, `Phone ${req.body.phone} is not valid`);
+    // let phone = phoneObj.globalP;
     let token: any;
     let user: any;
     try {
       user = await User.findOne({
-        where: [{ phone }, { email: req.body.email }],
+        where: [ { email: req.body.email }],
       });
       let validPassword = await comparePassword(
         req.body.password,
