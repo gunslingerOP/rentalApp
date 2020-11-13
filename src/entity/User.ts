@@ -47,8 +47,8 @@ export class User extends BaseEntity {
   @Column()
   isOwner: boolean;
 
-  @Column()
-  cityId: number;
+//   @Column()
+//   cityId: number;
 
   @Column()
   districtId: number;

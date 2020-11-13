@@ -20,8 +20,8 @@ export class District extends BaseEntity {
   @Column({default:false})
   active: boolean;
 
-  @Column()
-  cityID: number;
+  // @Column()
+  // cityID: number;
 
   @OneToMany((type) => Property, (property) => property.district)
   properties: Property[];
