@@ -26,8 +26,8 @@ export class Property extends BaseEntity{
     @Column()
     price: number;
 
-    @Column({nullable:true})
-    cityId: number;
+    // @Column({nullable:true})
+    // cityId: number;
 
     @Column()
     bedrooms: number;
