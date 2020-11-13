@@ -119,8 +119,9 @@ export default class UserController {
     // if (!phoneObj.isNumber)
     //   return errRes(res, `Phone ${req.body.phone} is not valid`);
     // let phone = phoneObj.globalP;
-    let token: any;
+    let token: any; //FIXME: phone removed
     let user: any;
+    console.log(req.body)   
     try {
       user = await User.findOne({
         where: [ { email: req.body.email }],
