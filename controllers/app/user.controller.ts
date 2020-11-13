@@ -121,7 +121,6 @@ export default class UserController {
     // let phone = phoneObj.globalP;
     let token: any; //FIXME: phone removed
     let user: any;
-    console.log(req.body)   
     try {
       user = await User.findOne({
         where: [ { email: req.body.email }],
