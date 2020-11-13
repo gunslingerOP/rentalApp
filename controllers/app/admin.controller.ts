@@ -58,7 +58,7 @@ static async addCity(req,res){
 
  try {
      province = await Province.findOne({
-         where:{id : req.body.provinceID}
+         where:{id : req.params.provinceId}
      })
      
  } catch (error) {
@@ -87,7 +87,7 @@ static async addCity(req,res){
 
  try {
     city = await City.findOne({
-        where:{id : req.body.cityID}
+        where:{id : req.params.cityId}
     })
     
 } catch (error) {

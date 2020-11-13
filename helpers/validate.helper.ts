@@ -83,19 +83,11 @@ export default class Validator {
     name: {
       type: "string",
       presence:must
-    },
-    provinceID:{
-      type:"number",
-      presence:must
     }
   });
   static addDistrict = (must = true) => ({
     name: {
       type: "string",
-      presence:must
-    },
-    cityId:{
-      type:"number",
       presence:must
     }
 

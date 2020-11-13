@@ -34,8 +34,8 @@ router.get("/property/reviews/:reviewId", dataStore.getPropertyReviews);
 
 router.post("/adminlogin", AdminController.login);
 router.post("/addprovince", adminAuth, AdminController.addProvince);
-router.post("/addcity", adminAuth, AdminController.addCity);
-router.post("/adddistrict", adminAuth, AdminController.addDistrict);
+router.post("/addcity/:provinceId", adminAuth, AdminController.addCity);
+router.post("/adddistrict/:cityId", adminAuth, AdminController.addDistrict);
 // TODO: get orders 
 
 export default router;
