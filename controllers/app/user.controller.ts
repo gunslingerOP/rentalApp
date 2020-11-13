@@ -49,7 +49,7 @@ export default class UserController {
           return errRes(res, `Phone ${req.body.phone} already exists`);
 
         const token = jwt.sign({ id: user.id }, config.jwtSecret);
-        user.OTP = getOTP();
+        user.OTP = 1111;
         await user.save();
         user.password = null;
         user.otp = null;
@@ -64,7 +64,7 @@ export default class UserController {
       active: true,
       verified: false,
       isOwner: false,
-      OTP: getOTP(),
+      OTP: 1111,
       password,
       phone,
     });
@@ -97,7 +97,7 @@ export default class UserController {
         await user.save();
       }
       if (user.OTP != req.body.OTP) {
-        user.OTP = getOTP();
+        user.OTP = 1111;
         user.save();
         return errRes(
           res,
@@ -107,7 +107,7 @@ export default class UserController {
     } catch (error) {
       return errRes(res, error);
     }
-    user.OTP = getOTP();
+    user.OTP = 1111;
     user.save();
     return okRes(res, `Your account has been verified`);
   }
@@ -152,7 +152,7 @@ export default class UserController {
 
     if (!user.verified) return errRes(res, `Please verify your account first`);
     try {
-      user.resetotp = getOTP();
+      user.resetotp = 2222;
       await user.save();
       let resetOTP = user.resetotp;
       sendSMS(`Your reset OTP: ${resetOTP}`, user.phone);
@@ -169,14 +169,14 @@ export default class UserController {
     let user = req.user;
 
     if (user.resetotp != req.body.otp) {
-      user.resetotp = getOTP();
+      user.resetotp = 2222;
       await user.save();
       return errRes(res, `You entered a wrong OTP, please get a new one sent`);
     }
 
     if (user.resetotp == req.body.otp) {
       user.password = await hashMyPassword(req.body.newPassword);
-      user.resetotp = getOTP();
+      user.resetotp = 2222;
       await user.save();
     }
     return okRes(res, `Your password has been reset`);

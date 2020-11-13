@@ -6,10 +6,6 @@ export default class Validator {
       presence: must,
       type: "string",
     },
-    image:{
-      presence:must,
-      type:"string"
-    },
     middleName: {
       presence: must,
       type: "string",
