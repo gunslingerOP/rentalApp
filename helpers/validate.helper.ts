@@ -52,10 +52,6 @@ export default class Validator {
     email: {
       type: "string",
     },
-    phone: {
-      presence: must,
-      type: "string",
-    },
     password:{
       presence:must,
       type:"string"

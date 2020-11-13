@@ -136,7 +136,7 @@ export default class UserController {
     } catch (error) {
       return errRes(res, error);
     }
-    return okRes(res, { data: [token] });
+    return okRes(res, { token: token});
   }
 
   static async sendReset(req, res): Promise<object> {

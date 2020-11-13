@@ -36,6 +36,6 @@ router.post("/adminlogin", AdminController.login);
 router.post("/addprovince", adminAuth, AdminController.addProvince);
 router.post("/addcity/:provinceId", adminAuth, AdminController.addCity);
 router.post("/adddistrict/:cityId", adminAuth, AdminController.addDistrict);
-// TODO: get orders 
+// TODO: get orders t
 
 export default router;
