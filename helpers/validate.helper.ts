@@ -50,6 +50,7 @@ export default class Validator {
   });
   static login = (must = true) => ({
     email: {
+      presence:must,
       type: "string",
     },
     password:{
