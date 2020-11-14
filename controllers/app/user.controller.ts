@@ -125,6 +125,7 @@ export default class UserController {
       user = await User.findOne({
         where: [ { email: req.body.email }],
       });
+      if (!user.verified) return errRes(res, `Please verify your account first`)
       let validPassword = await comparePassword(
         req.body.password,
         user.password
@@ -184,6 +185,7 @@ export default class UserController {
 
   static async becomeHost(req, res): Promise<object> {
     let user = req.user;
+    if (!user.verified) return errRes(res, `Please verify your account first`)
 
     user.isOwner = true;
     await user.save();
@@ -252,7 +254,9 @@ export default class UserController {
     if (isNotValid) return errRes(res, isNotValid);
     let province: any;
     let city: any;
+    let user = req.user;
     let district: any;
+    if (!user.verified) return errRes(res, `Please verify your account first`)
 
     try {
       district = await District.findOne({
@@ -279,7 +283,6 @@ export default class UserController {
       return errRes(res, "its me");
     }
 
-    let user = req.user;
     let property: any;
     if (!user.isOwner) return errRes(res, `please activate your host status`);
 
@@ -347,6 +350,7 @@ export default class UserController {
     if (isNotValid) return errRes(res, isNotValid);
     let user = req.user;
     let invoice: any;
+    if (!user.verified) return errRes(res, `Please verify your account first`)
 
     try {
       invoice = await Invoice.create({
@@ -369,6 +373,8 @@ export default class UserController {
     let isNotValid = validate(req.body, validator.getInvoiceLandlord());
     if (isNotValid) return errRes(res, isNotValid);
     let user = req.user;
+    if (!user.verified) return errRes(res, `Please verify your account first`)
+
     if (!user.isOwner)
       return errRes(res, `Please activate your host status first!`);
     let invoice: any;
