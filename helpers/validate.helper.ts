@@ -215,6 +215,10 @@ export default class Validator {
       presence:must,
       type:"number"
     },
+    startYear:{
+      presence:must,
+      type:"number"
+    },
     endDay:{
       presence:must,
       type:"number"

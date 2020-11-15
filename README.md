@@ -26,7 +26,7 @@ This is the backend repository to the Airbnb web app that will be a part of the 
 
 9-addreviewimage/reviewId: takes: reviewId from req.params (from the URL), image. sets an image for the review with the provided id **needs login session token**
 
-10-makeinvoice: takes:landlordId, propertyId, price,startHour, startMonth, endDay, endMonth. this invoice is created when a user clicks "checkout" on the desired proeprty **needs login session token**
+10-makeinvoice: takes:landlordId, propertyId, price,startHour, startMonth, startYear, endDay, endMonth  . this invoice is created when a user clicks "checkout" on the desired proeprty **needs login session token**
 
 11-accepttenant/invoiceId: takes: invoiceId from req.params (from the URL). this link accepts the tenant who wants to rent the property **needs login session token**
 
