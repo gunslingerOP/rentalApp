@@ -370,7 +370,7 @@ export default class UserController {
         res,
         `Invalid request, choose a month which hasn't passed!`
       );
-    if (startYear == year && startDay < date)
+    if (startYear == year && startMonth == month && startDay < date)
       return errRes(res, `Invalid request, choose a date which hasn't passed!`);
     try {
       property = await Property.findOne({
@@ -389,7 +389,7 @@ export default class UserController {
       await invoice.save();
       notification = await Notification.create({
         recipientId: invoice.landlordId,
-        msg: `A reservation on your property ${property.title} was made by ${user.firstName} ${user.middleName}`,
+        msg: `There is a reservation request on your property ${property.title} by ${user.firstName} ${user.middleName}`,
       });
     } catch (error) {
       return errRes(res, error);
