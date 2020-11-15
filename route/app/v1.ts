@@ -37,6 +37,9 @@ router.post("/adminlogin", AdminController.login);
 router.post("/addprovince", adminAuth, AdminController.addProvince);
 router.post("/addcity/:provinceId", adminAuth, AdminController.addCity);
 router.post("/adddistrict/:cityId", adminAuth, AdminController.addDistrict);
+router.get("pendingInvoices", adminAuth, AdminController.getPendingInvoices)
+router.get("paidInvoices", adminAuth, AdminController.getPaidInvoices)
+
 // TODO: get orders t
 
 export default router;

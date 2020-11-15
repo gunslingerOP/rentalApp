@@ -10,6 +10,7 @@ import { request } from "http";
 import { City } from "../../src/entity/city";
 import { District } from "../../src/entity/district";
 import { findSourceMap } from "module";
+import { Invoice } from "../../src/entity/invoice";
 
 
 
@@ -106,5 +107,28 @@ static async addCity(req,res){
  
  return okRes(res, `district successfully created`)
  }
+
+ static async getPendingInvoices(req, res){
+   let invoices:any;
+
+   invoices = await Invoice.find({
+     where:{hostPaidStatus:false, paidStatus:true}
+   })
+   if(!invoices) return errRes(res, `No pending invoices found`)
+
+   return okRes(res, invoices)
+ }
+
+
+ static async getPaidInvoices(req, res){
+  let invoices:any;
+
+  invoices = await Invoice.find({
+    where:{hostPaidStatus:true, paidStatus:true}
+  })
+  if(!invoices) return errRes(res, `No paid invoices found`)
+
+  return okRes(res, invoices)
+}
 
 }
