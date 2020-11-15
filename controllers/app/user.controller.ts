@@ -479,6 +479,7 @@ export default class UserController {
     let property: any;
     let startYear: any;
     if (!invoiceId) return errRes(res, `Please send an invoice id`);
+    try {
       invoice = await Invoice.findOne({
         where: {
           id: invoiceId,
@@ -487,13 +488,15 @@ export default class UserController {
           hasReviewed: false,
         },
       });
-      if (!Invoice) return errRes(res, `No invoice found`);
+      if (!invoice) return errRes(res, `No invoice found`);
       if (invoice.userRefundStatus)
         return errRes(res, `Your money has already been refunded`);
       startDay = invoice.startDay;
       startMonth = invoice.startMonth;
       startYear = invoice.startYear;
-   
+    } catch (error) {
+      return errRes(res, error);
+    }
     try {
       tenant = await User.findOne({
         where: { id: invoice.userId },
