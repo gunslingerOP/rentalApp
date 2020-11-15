@@ -349,8 +349,8 @@ export default class UserController {
     let isNotValid = validate(req.body, validator.makeInvoiceUser());
     if (isNotValid) return errRes(res, isNotValid);
     let user = req.user;
-    let notification:any;
-    let property:any;
+    let notification: any;
+    let property: any;
     let d = new Date();
     let month = d.getMonth() + 1;
     let date = d.getDate();
@@ -374,9 +374,9 @@ export default class UserController {
       return errRes(res, `Invalid request, choose a date which hasn't passed!`);
     try {
       property = await Property.findOne({
-        where:{id:req.body.propertyId}
-      })
-      if(!property) return errRes(res,`No such property found`)
+        where: { id: req.body.propertyId },
+      });
+      if (!property) return errRes(res, `No such property found`);
       invoice = await Invoice.create({
         ...req.body,
         user,
@@ -478,7 +478,7 @@ export default class UserController {
     let startMonth: any;
     let property: any;
     let startYear: any;
-    if(!invoiceId) return errRes(res, `Please send an invoice id`)
+    if (!invoiceId) return errRes(res, `Please send an invoice id`);
     try {
       invoice = await Invoice.findOne({
         where: {
@@ -489,6 +489,8 @@ export default class UserController {
         },
       });
       if (!Invoice) return errRes(res, `No invoice found`);
+      if (invoice.userRefundStatus)
+        return errRes(res, `Your money has already been refunded`);
       startDay = invoice.startDay;
       startMonth = invoice.startMonth;
       startYear = invoice.startYear;
@@ -499,14 +501,12 @@ export default class UserController {
       tenant = await User.findOne({
         where: { id: invoice.userId },
       });
-      if (!tenant)
-      return errRes(res, `No tenant found`);
+      if (!tenant) return errRes(res, `No tenant found`);
       property = await Property.findOne({
         where: { id: invoice.propertyId },
       });
 
-      if (!property)
-        return errRes(res, `No property found`);
+      if (!property) return errRes(res, `No property found`);
     } catch (error) {
       return errRes(res, error);
     }
@@ -517,12 +517,13 @@ export default class UserController {
           invoice.paidStatus = false;
           invoice.userRefundStatus = true;
           property.booked = false;
-          await property.save();
-          await invoice.save();
           notification = await Notification.create({
             recipientId: invoice.landlordId,
             msg: `The reservation for your property made by ${tenant.firstName} ${tenant.middleName} has been cancelled`,
           });
+          await property.save();
+          await invoice.save();
+          await notification.save();
           return okRes(res, `Reservation cancelled successfully`);
           //TODO: refund the money in the amount of invoice.price using the payment method
         } else {
@@ -530,16 +531,18 @@ export default class UserController {
         }
       }
       if (startYear > year) {
-        if(month == 12 && date>5) return errRes(res, `You can't cancel anymore, it's too late`)
+        if (month == 12 && date > 5)
+          return errRes(res, `You can't cancel anymore, it's too late`);
         invoice.paidStatus = false;
         invoice.userRefundStatus = true;
         property.booked = false;
-        await property.save();
-        await invoice.save();
         notification = await Notification.create({
           recipientId: invoice.landlordId,
           msg: `The reservation for your property made by ${tenant.firstName} ${tenant.middleName} has been cancelled`,
         });
+        await property.save();
+        await invoice.save();
+        await notification.save();
         return okRes(res, `Reservation cancelled successfully`);
       }
     } catch (error) {
