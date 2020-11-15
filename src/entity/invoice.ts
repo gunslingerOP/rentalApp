@@ -42,6 +42,9 @@ export class Invoice extends BaseEntity{
     startDay:number;
 
     @Column()
+    startYear:number;
+
+    @Column()
     startMonth:number;
 
     @Column()

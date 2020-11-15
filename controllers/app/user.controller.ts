@@ -123,9 +123,10 @@ export default class UserController {
     let user: any;
     try {
       user = await User.findOne({
-        where: [ { email: req.body.email }],
+        where: [{ email: req.body.email }],
       });
-      if (!user.verified) return errRes(res, `Please verify your account first`)
+      if (!user.verified)
+        return errRes(res, `Please verify your account first`);
       let validPassword = await comparePassword(
         req.body.password,
         user.password
@@ -137,7 +138,7 @@ export default class UserController {
     } catch (error) {
       return errRes(res, error);
     }
-    return okRes(res, { token: token});
+    return okRes(res, { token: token });
   }
 
   static async sendReset(req, res): Promise<object> {
@@ -185,7 +186,7 @@ export default class UserController {
 
   static async becomeHost(req, res): Promise<object> {
     let user = req.user;
-    if (!user.verified) return errRes(res, `Please verify your account first`)
+    if (!user.verified) return errRes(res, `Please verify your account first`);
 
     user.isOwner = true;
     await user.save();
@@ -201,18 +202,18 @@ export default class UserController {
     property = await Property.findOne({
       where: { id: req.body.propertyID, userId: user.id },
     });
-   
+
     if (!property) return errRes(res, `no such property found`);
     let newImage: any;
     try {
-      req.body.image.map(async (el)=>{
+      req.body.image.map(async (el) => {
         newImage = await PropertyImage.create({
           ...req.body,
           image: el,
           property,
         });
         await newImage.save();
-      })
+      });
     } catch (error) {
       return errRes(res, error);
     }
@@ -233,15 +234,14 @@ export default class UserController {
     if (!review) return errRes(res, `no such property found`);
     let newImage: any;
     try {
-      req.body.image.map(async(el)=>{
-
+      req.body.image.map(async (el) => {
         newImage = await ReviewImage.create({
           ...req.body,
-          image:el,
+          image: el,
           review,
         });
         await newImage.save();
-      })
+      });
     } catch (error) {
       return errRes(res, error);
     }
@@ -256,7 +256,7 @@ export default class UserController {
     let city: any;
     let user = req.user;
     let district: any;
-    if (!user.verified) return errRes(res, `Please verify your account first`)
+    if (!user.verified) return errRes(res, `Please verify your account first`);
 
     try {
       district = await District.findOne({
@@ -349,10 +349,34 @@ export default class UserController {
     let isNotValid = validate(req.body, validator.makeInvoiceUser());
     if (isNotValid) return errRes(res, isNotValid);
     let user = req.user;
+    let notification:any;
+    let property:any;
+    let d = new Date();
+    let month = d.getMonth() + 1;
+    let date = d.getDate();
+    let year = d.getFullYear();
+    let startYear = req.body.startYear;
+    let startMonth = req.body.startMonth;
+    let startDay = req.body.startDay;
     let invoice: any;
-    if (!user.verified) return errRes(res, `Please verify your account first`)
-
+    if (!user.verified) return errRes(res, `Please verify your account first`);
+    if (startYear < year)
+      return errRes(
+        res,
+        `The year must be this one or the next, it can't be a previous year!`
+      );
+    if (startYear == year && startMonth < month)
+      return errRes(
+        res,
+        `Invalid request, choose a month which hasn't passed!`
+      );
+    if (startYear == year && startDay < date)
+      return errRes(res, `Invalid request, choose a date which hasn't passed!`);
     try {
+      property = await Property.findOne({
+        where:{id:req.body.propertyId}
+      })
+      if(!property) return errRes(res,`No such property found`)
       invoice = await Invoice.create({
         ...req.body,
         user,
@@ -363,6 +387,10 @@ export default class UserController {
         userRefundStatus: false,
       });
       await invoice.save();
+      notification = await Notification.create({
+        recipientId: invoice.landlordId,
+        msg: `A reservation on your property ${property.title} was made by ${user.firstName} ${user.middleName}`,
+      });
     } catch (error) {
       return errRes(res, error);
     }
@@ -373,7 +401,7 @@ export default class UserController {
     let isNotValid = validate(req.body, validator.getInvoiceLandlord());
     if (isNotValid) return errRes(res, isNotValid);
     let user = req.user;
-    if (!user.verified) return errRes(res, `Please verify your account first`)
+    if (!user.verified) return errRes(res, `Please verify your account first`);
 
     if (!user.isOwner)
       return errRes(res, `Please activate your host status first!`);
@@ -434,5 +462,86 @@ export default class UserController {
       return errRes(res, error);
     }
     return okRes(res, `Notification sent`);
+  }
+  //TODO: allow only one invoice per user
+  static async cancelBooking(req, res): Promise<object> {
+    let user = req.user;
+    let invoiceId = req.params.invoiceId;
+    let d = new Date();
+    let month = d.getMonth() + 1;
+    let date = d.getDate();
+    let year = d.getFullYear();
+    let notification: any;
+    let invoice: any;
+    let tenant: any;
+    let startDay: any;
+    let startMonth: any;
+    let property: any;
+    let startYear: any;
+    try {
+      invoice = await Invoice.findOne({
+        where: {
+          id: invoiceId,
+          paidStatus: true,
+          hostPaidStatus: false,
+          hasReviewed: false,
+        },
+      });
+      if (!Invoice) return errRes(res, `No invoice found`);
+      startDay = invoice.startDay;
+      startMonth = invoice.startMonth;
+      startYear = invoice.startYear;
+    } catch (error) {
+      return errRes(res, error);
+    }
+    try {
+      tenant = await User.findOne({
+        where: { id: invoice.userId },
+      });
+
+      property = await Property.findOne({
+        where: { id: invoice.propertyId },
+      });
+
+      if (!tenant || property)
+        return errRes(res, `No property or tenant found`);
+    } catch (error) {
+      return errRes(res, error);
+    }
+
+    try {
+      if (year == startYear) {
+        if (startDay > date - 3 || startMonth > month - 1) {
+          invoice.paidStatus = false;
+          invoice.userRefundStatus = true;
+          property.booked = false;
+          await property.save();
+          await invoice.save();
+          notification = await Notification.create({
+            recipientId: invoice.landlordId,
+            msg: `The reservation for your property made by ${tenant.firstName} ${tenant.middleName} has been cancelled`,
+          });
+          return okRes(res, `Reservation cancelled successfully`);
+          //TODO: refund the money in the amount of invoice.price using the payment method
+        } else {
+          return errRes(res, `You can't cancel anymore, it's too late`);
+        }
+      }
+      if (startYear > year) {
+        if(month == 12 && date>5) return errRes(res, `You can't cancel anymore, it's too late`)
+        invoice.paidStatus = false;
+        invoice.userRefundStatus = true;
+        property.booked = false;
+        await property.save();
+        await invoice.save();
+        notification = await Notification.create({
+          recipientId: invoice.landlordId,
+          msg: `The reservation for your property made by ${tenant.firstName} ${tenant.middleName} has been cancelled`,
+        });
+        return okRes(res, `Reservation cancelled successfully`);
+      }
+    } catch (error) {
+      return errRes(res, error);
+    }
   }
 }

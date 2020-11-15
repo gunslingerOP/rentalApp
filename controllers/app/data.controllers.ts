@@ -67,7 +67,7 @@ export default class dataStore {
     let { p, s } = req.query;
     let { take, skip } = paginate(p, s);
     properties = await Property.findAndCount({
-      where: { cityId: cityID },
+      where: { city: cityID }, //FIXME: changed this to directly entity
       take,
       skip
     });

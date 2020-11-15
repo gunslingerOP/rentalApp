@@ -20,6 +20,7 @@ router.post("/addreviewimage", userAuth, UserController.addReviewImage);
 router.post("/makeinvoice", userAuth, UserController.makeInvoiceUser);
 router.post("/accepttenant/:invoiceId", userAuth, UserController.acceptTenant); 
 router.post("/notify", userAuth, UserController.sendNotification);
+router.post("/refund", userAuth, UserController.cancelBooking)
 
 router.get("/invoicelandlord", userAuth, UserController.getInvoiceLandlord);
 router.get("/notifications", userAuth, dataStore.getNotifications);
