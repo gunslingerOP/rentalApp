@@ -14,13 +14,13 @@ router.post("/sendreset", apiLimiter, userAuth, UserController.sendReset);
 router.post("/resetPassword", userAuth, UserController.resetPassword);
 router.post("/becomehost", userAuth, UserController.becomeHost);
 router.post("/postproperty", apiLimiter, userAuth, UserController.postProperty);
-router.post("/addpropertyimage", userAuth, UserController.addPropertyImage);
+router.post("/addpropertyimage/:propertyId", userAuth, UserController.addPropertyImage);
 router.post("/postreview/:propertyId", userAuth, UserController.postReview);
-router.post("/addreviewimage", userAuth, UserController.addReviewImage);
+router.post("/addreviewimage/:reviewId", userAuth, UserController.addReviewImage);
 router.post("/makeinvoice", userAuth, UserController.makeInvoiceUser);
 router.post("/accepttenant/:invoiceId", userAuth, UserController.acceptTenant); 
 router.post("/notify", userAuth, UserController.sendNotification);
-router.post("/refund", userAuth, UserController.cancelBooking)
+router.post("/refund/:invoiceId", userAuth, UserController.cancelBooking)
 
 router.get("/invoicelandlord", userAuth, UserController.getInvoiceLandlord);
 router.get("/notifications", userAuth, dataStore.getNotifications);

@@ -200,7 +200,7 @@ export default class UserController {
     let user = req.user;
     if (!user.isOwner) return errRes(res, `You are not a host`);
     property = await Property.findOne({
-      where: { id: req.body.propertyID, userId: user.id },
+      where: { id: req.params.propertyId, userId: user.id },
     });
 
     if (!property) return errRes(res, `no such property found`);
@@ -229,7 +229,7 @@ export default class UserController {
     let review: any;
 
     review = await Review.findOne({
-      where: { id: req.body.reviewId },
+      where: { id: req.params.reviewId },
     });
     if (!review) return errRes(res, `no such property found`);
     let newImage: any;
@@ -478,6 +478,7 @@ export default class UserController {
     let startMonth: any;
     let property: any;
     let startYear: any;
+    if(!invoiceId) return errRes(res, `Please send an invoice id`)
     try {
       invoice = await Invoice.findOne({
         where: {

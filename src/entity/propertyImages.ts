@@ -8,7 +8,7 @@ export class PropertyImage extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({nullable:true})
     propertyID: number;
 
     @Column()

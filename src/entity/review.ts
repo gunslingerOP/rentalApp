@@ -9,7 +9,7 @@ export class Review extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({nullable:true})
     propertyId: number;
 
     @Column()

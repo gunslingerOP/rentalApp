@@ -33,7 +33,7 @@ export default class dataStore {
 
     try {
       invoice = await Invoice.findAndCount({
-        where:  { userId: user.id },
+        where:  { user: user.id },
         take,
         skip,
       });
@@ -84,7 +84,7 @@ export default class dataStore {
     let {take, skip} = paginate(p ,s)
 
     properties = await Property.findAndCount({
-      where: { districtId: districtId },
+      where: { district: districtId },
       take,
       skip
     });
@@ -97,7 +97,7 @@ export default class dataStore {
     let property = req.params.propertyId;
     let images: any;
     images = await PropertyImage.find({
-      where: { propertyID: property },
+      where: { property: property },
     });
     if (!images) return errRes(res, `no properties found`);
 
@@ -108,7 +108,7 @@ export default class dataStore {
     let property = req.params.propertyId;
     let reviews: any;
     reviews = await Review.find({
-      where: { propertyID: property },
+      where: { property: property },
       join:{
         alias:"review",
         leftJoinAndSelect:{

@@ -159,10 +159,7 @@ export default class Validator {
   });
 
   static postReview = (must = true) => ({
-    propertyId: {
-      type: "number",
-      presence: must,
-    },
+   
     stars: {
       numericality: {
         onlyInteger: true,
@@ -180,10 +177,7 @@ export default class Validator {
     }
   });
   static addPropertyImage = (must = true) => ({
-    propertyID: {
-      type: "number",
-      presence: must,
-    },
+ 
     image: {
       presence: must,
       type: "array",
@@ -191,10 +185,6 @@ export default class Validator {
   });
 
   static addReviewImage = (must = true) => ({
-    reviewId: {
-      type: "number",
-      presence: must,
-    },
     image: {
       presence: must,
       type: "array",
