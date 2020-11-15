@@ -513,7 +513,14 @@ export default class UserController {
 
     try {
       if (year == startYear) {
-        if (startDay > date - 3 || startMonth > month - 1) {
+        if (startMonth >= month) {
+          if (startMonth == month && startDay < date + 25)
+            return errRes(res, `It's too late to cancel`);
+          if (startMonth - 1 == month && startDay! >= date)
+            return errRes(
+              res,
+              `Your reservation is less than a month away, you can't cancel now`
+            );
           invoice.paidStatus = false;
           invoice.userRefundStatus = true;
           property.booked = false;
