@@ -499,13 +499,14 @@ export default class UserController {
       tenant = await User.findOne({
         where: { id: invoice.userId },
       });
-
+      if (!tenant)
+      return errRes(res, `No tenant found`);
       property = await Property.findOne({
         where: { id: invoice.propertyId },
       });
 
-      if (!tenant || property)
-        return errRes(res, `No property or tenant found`);
+      if (!property)
+        return errRes(res, `No property found`);
     } catch (error) {
       return errRes(res, error);
     }
