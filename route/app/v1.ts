@@ -22,24 +22,23 @@ router.post("/accepttenant/:invoiceId", userAuth, UserController.acceptTenant);
 router.post("/notify", userAuth, UserController.sendNotification);
 router.post("/refund/:invoiceId", userAuth, UserController.cancelBooking)
 
-router.get("/invoicelandlord", userAuth, UserController.getInvoiceLandlord);
+router.get("/invoice/landlord", userAuth, UserController.getInvoiceLandlord);
 router.get("/notifications", userAuth, dataStore.getNotifications);
-router.get("/invoicesuser", userAuth, dataStore.getInvoices);
+router.get("/invoices/user", userAuth, dataStore.getInvoices);
 router.get("/location", dataStore.getLocation);
 router.get("/city/properties/:cityId", dataStore.getCityProperties);
 router.get("/districtproperties/:districtId", dataStore.getDistrictProperties);
 router.get("/property/images/:propertyId", dataStore.getPropertyImages);
-router.get("/property/reviews/:reviewId", dataStore.getPropertyReviews);
+router.get("/reviews/:propertyId", dataStore.getPropertyReviews);
 
 // ------------------------------------ADMIN STUFF-------------------------------------------------
 
-router.post("/adminlogin", AdminController.login);
+router.post("/admin/login", AdminController.login);
 router.post("/addprovince", adminAuth, AdminController.addProvince);
 router.post("/addcity/:provinceId", adminAuth, AdminController.addCity);
 router.post("/adddistrict/:cityId", adminAuth, AdminController.addDistrict);
 router.get("pendingInvoices", adminAuth, AdminController.getPendingInvoices)
 router.get("paidInvoices", adminAuth, AdminController.getPaidInvoices)
 
-// TODO: get orders t
 
 export default router;

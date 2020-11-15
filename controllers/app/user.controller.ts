@@ -514,25 +514,34 @@ export default class UserController {
     try {
       if (year == startYear) {
         if (startMonth >= month) {
-          if (startMonth == month && startDay < date + 25)
-            return errRes(res, `It's too late to cancel`);
-          if (startMonth - 1 == month && startDay< date)
-            return errRes(
-              res,
-              `Your reservation is less than a month away, you can't cancel now`
-            );
-          invoice.paidStatus = false;
-          invoice.userRefundStatus = true;
-          property.booked = false;
-          notification = await Notification.create({
-            recipientId: invoice.landlordId,
-            msg: `The reservation for your property made by ${tenant.firstName} ${tenant.middleName} has been cancelled`,
-          });
-          await property.save();
-          await invoice.save();
-          await notification.save();
-          return okRes(res, `Reservation cancelled successfully`);
-          //TODO: refund the money in the amount of invoice.price using the payment method
+          if (startMonth == month && date > startDay) {
+            if (date - 3 > startDay)
+              return errRes(
+                res,
+                `You're more than 3 days into your reservation, it's too late to cancel`
+              );
+            else if (startMonth == month && startDay < date + 25)
+              return errRes(res, `It's too late to cancel`);
+            else if (startMonth - 1 == month && startDay < date)
+              return errRes(
+                res,
+                `Your reservation is less than a month away, you can't cancel now`
+              );
+            else {
+              invoice.paidStatus = false;
+              invoice.userRefundStatus = true;
+              property.booked = false;
+              notification = await Notification.create({
+                recipientId: invoice.landlordId,
+                msg: `The reservation for your property made by ${tenant.firstName} ${tenant.middleName} has been cancelled`,
+              });
+              await property.save();
+              await invoice.save();
+              await notification.save();
+              return okRes(res, `Reservation cancelled successfully`);
+              //TODO: refund the money in the amount of invoice.price using the payment method
+            }
+          }
         } else {
           return errRes(res, `You can't cancel anymore, it's too late`);
         }
