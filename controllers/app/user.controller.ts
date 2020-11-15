@@ -516,7 +516,7 @@ export default class UserController {
         if (startMonth >= month) {
           if (startMonth == month && startDay < date + 25)
             return errRes(res, `It's too late to cancel`);
-          if (startMonth - 1 == month && startDay! >= date)
+          if (startMonth - 1 == month && startDay< date)
             return errRes(
               res,
               `Your reservation is less than a month away, you can't cancel now`
